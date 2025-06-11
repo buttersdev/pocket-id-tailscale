@@ -28,6 +28,10 @@ func NewWellKnownController(group *gin.RouterGroup, jwtService *service.JwtServi
 
 	group.GET("/.well-known/jwks.json", wkc.jwksHandler)
 	group.GET("/.well-known/openid-configuration", wkc.openIDConfigurationHandler)
+	appUrl := common.EnvConfig.AppURL
+	group.GET("/.well-known/webfinger", func(c *gin.Context) {
+		c.String(http.StatusOK, "{\"subject\": \"acct:tailscale@"+appUrl+"\",\"links\": [{\"rel\": \"http://openid.net/specs/connect/1.0/issuer\",\"href\": \""+appUrl+"\"}]}")
+	})
 }
 
 type WellKnownController struct {
